@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EduBot Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; transition: background 0.2s ease, opacity 0.2s ease, transform 0.2s ease; }
+
+body { margin: 0; font-family: 'Inter', sans-serif; background: #0f1117; color: white; }
+
+.header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 30px; background: #181c27;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.header h2 { margin: 0; font-size: 18px; }
+.nav a { color: #9aa0b8; margin-left: 20px; text-decoration: none; font-size: 14px; }
+.nav a:hover { color: #6c7ef8; }
+
+.container { padding: 30px; }
+
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+.card { background: #181c27; padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+.card h3 { margin: 5px 0 0; font-size: 26px; }
+.card span { font-size: 12px; color: #9aa0b8; }
+
+.tabs {
+  display: flex; gap: 4px; margin-bottom: 24px; background: #181c27;
+  padding: 6px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);
+  width: fit-content;
+}
+.tab-btn {
+  padding: 9px 20px; border-radius: 8px; border: none; cursor: pointer;
+  background: transparent; color: #9aa0b8; font-size: 13px; font-weight: 500;
+  font-family: 'Inter', sans-serif;
+}
+.tab-btn.active { background: #6c7ef8; color: white; }
+.tab-btn:hover:not(.active) { background: rgba(255,255,255,0.06); color: #e0e3f0; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.section-title {
+  font-size: 13px; font-weight: 600; color: #9aa0b8;
+  text-transform: uppercase; letter-spacing: 1px; margin: 0 0 16px;
+}
+
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+.chart-card { background: #181c27; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; }
+.chart-card h4 { margin: 0 0 16px; font-size: 13px; color: #9aa0b8; font-weight: 500; }
+.chart-wrap { position: relative; height: 220px; }
+
+.search {
+  width: 100%; padding: 11px 14px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08); background: #1e2333;
+  color: white; margin-bottom: 18px; font-family: 'Inter', sans-serif; font-size: 13px;
+}
+.search:focus { outline: none; border-color: rgba(108,126,248,0.4); }
+
+.query, .kb-card {
+  background: #181c27; padding: 20px; border-radius: 12px;
+  margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.05);
+}
+.query:hover, .kb-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+
+.badge { float: right; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.badge-pending  { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.badge-resolved { background: rgba(52,211,153,0.15); color: #34d399; }
+.badge-kb       { background: rgba(108,126,248,0.15); color: #6c7ef8; }
+
+.freq-badge {
+  display: inline-block; background: rgba(108,126,248,0.15); color: #6c7ef8;
+  border: 1px solid rgba(108,126,248,0.25); border-radius: 20px;
+  font-size: 11px; padding: 2px 8px; margin-left: 8px; vertical-align: middle;
+}
+
+label { font-size: 12px; color: #9aa0b8; display: block; margin-bottom: 4px; }
+textarea, input[type=text] {
+  width: 100%; padding: 10px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08); background: #1e2333;
+  color: white; font-family: 'Inter', sans-serif; font-size: 13px; margin-bottom: 10px;
+}
+textarea:focus, input[type=text]:focus { outline: none; border-color: rgba(108,126,248,0.4); }
+textarea { resize: vertical; min-height: 70px; }
+
+button {
+  padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer;
+  font-family: 'Inter', sans-serif; font-size: 13px;
+}
+.btn-save   { background: linear-gradient(135deg, #6c7ef8, #8b5cf6); color: white; }
+.btn-save:hover { opacity: 0.85; }
+.btn-delete { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+.btn-delete:hover { background: rgba(239,68,68,0.25); }
+.btn-edit   { background: rgba(108,126,248,0.12); color: #6c7ef8; border: 1px solid rgba(108,126,248,0.25); }
+.btn-edit:hover { background: rgba(108,126,248,0.25); }
+.btn-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+
+.pattern-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; }
+.ptag {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: #c0c6de; border-radius: 20px; font-size: 11px; padding: 3px 10px;
+}
+
+.kb-answer {
+  font-size: 13px; color: #c0c6de; background: #1a1f2e; border-radius: 8px;
+  padding: 10px 14px; margin: 8px 0; white-space: pre-wrap; line-height: 1.6;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.resolved-answer {
+  font-size: 13px; color: #34d399; background: rgba(52,211,153,0.06);
+  border: 1px solid rgba(52,211,153,0.15); border-radius: 8px;
+  padding: 10px 14px; margin: 8px 0; white-space: pre-wrap; line-height: 1.6;
+}
+
+.edit-form {
+  display: none; margin-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.06); padding-top: 14px;
+}
+.edit-form.open { display: block; }
+
+.meta { font-size: 11px; color: #5a607a; margin-top: 4px; }
+
+.empty { text-align: center; color: #9aa0b8; margin-top: 40px; padding: 40px; }
+.empty h3 { margin-bottom: 6px; }
+
+.toast {
+  position: fixed; bottom: 20px; right: 20px; padding: 12px 18px;
+  border-radius: 8px; opacity: 0; color: white; font-size: 14px;
+  z-index: 999; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h2>🎓 EduBot Admin</h2>
+  <div class="nav">
+    <a href="/">Chatbot</a>
+    <a href="/logout">Logout</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="card"><span>Pending</span><h3 id="stat-pending">0</h3></div>
+    <div class="card"><span>Resolved</span><h3 id="stat-resolved">0</h3></div>
+    <div class="card"><span>Intents</span><h3 id="stat-intents">0</h3></div>
+    <div class="card"><span>Patterns</span><h3 id="stat-patterns">0</h3></div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="section-title">Analytics</div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h4>Most Asked Questions (by frequency)</h4>
+      <div class="chart-wrap"><canvas id="freqChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h4>Query Status Breakdown</h4>
+      <div class="chart-wrap"><canvas id="statusChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('pending')">⏳ Pending Review</button>
+    <button class="tab-btn" onclick="switchTab('resolved')">✅ Resolved</button>
+    <button class="tab-btn" onclick="switchTab('kb')">📚 Knowledge Base</button>
+  </div>
+
+  <!-- TAB 1: PENDING -->
+  <div id="tab-pending" class="tab-panel active">
+    <input id="search-pending" class="search" placeholder="Search pending queries…">
+    <div id="list-pending"></div>
+    <div id="empty-pending" class="empty" style="display:none;">
+      <h3>🎉 All caught up!</h3><p>No pending queries right now.</p>
+    </div>
+  </div>
+
+  <!-- TAB 2: RESOLVED -->
+  <div id="tab-resolved" class="tab-panel">
+    <input id="search-resolved" class="search" placeholder="Search resolved queries…">
+    <div id="list-resolved"></div>
+    <div id="empty-resolved" class="empty" style="display:none;">
+      <h3>No resolved queries yet.</h3><p>Answered queries will appear here.</p>
+    </div>
+  </div>
+
+  <!-- TAB 3: KNOWLEDGE BASE -->
+  <div id="tab-kb" class="tab-panel">
+    <input id="search-kb" class="search" placeholder="Search knowledge base…">
+    <div id="list-kb"></div>
+    <div id="empty-kb" class="empty" style="display:none;">
+      <h3>Knowledge base is empty.</h3><p>Answer pending queries to build it up.</p>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+let freqChartInstance = null;
+let statusChartInstance = null;
+
+// ── Utils ──────────────────────────────────────────────────────────
+function toast(msg, ok=true) {
+  const t = document.getElementById("toast");
+  t.innerText = msg;
+  t.style.background = ok ? "#22c55e" : "#ef4444";
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function checkEmpty(tab) {
+  const list  = document.getElementById("list-" + tab);
+  const empty = document.getElementById("empty-" + tab);
+  const visible = [...list.children].filter(c => c.style.display !== "none");
+  empty.style.display = visible.length === 0 ? "block" : "none";
+}
+
+// ── Tabs ───────────────────────────────────────────────────────────
+function switchTab(tab) {
+  const names = ["pending","resolved","kb"];
+  document.querySelectorAll(".tab-btn").forEach((b,i) => b.classList.toggle("active", names[i] === tab));
+  document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+  document.getElementById("tab-" + tab).classList.add("active");
+  if (tab === "resolved") loadResolved();
+  if (tab === "kb")       loadKnowledgeBase();
+}
+
+// ── Stats + Charts ─────────────────────────────────────────────────
+async function loadStats() {
+  const d = await fetch("/admin/stats").then(r => r.json());
+  document.getElementById("stat-pending").innerText  = d.pending;
+  document.getElementById("stat-resolved").innerText = d.resolved;
+  document.getElementById("stat-intents").innerText  = d.intents;
+  document.getElementById("stat-patterns").innerText = d.patterns;
+  renderStatusChart(d.pending, d.resolved);
+}
+
+function renderFreqChart(queries) {
+  const top    = [...queries].sort((a,b)=>(b.frequency||1)-(a.frequency||1)).slice(0,8);
+  const labels = top.map(q => q.query.length>28 ? q.query.slice(0,28)+"…" : q.query);
+  const data   = top.map(q => q.frequency||1);
+  const ctx = document.getElementById("freqChart").getContext("2d");
+  if (freqChartInstance) freqChartInstance.destroy();
+  freqChartInstance = new Chart(ctx, {
+    type:"bar",
+    data:{ labels, datasets:[{
+      label:"Times asked", data,
+      backgroundColor:"rgba(108,126,248,0.55)", borderColor:"#6c7ef8",
+      borderWidth:1, borderRadius:5
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:c=>` Asked ${c.raw} time${c.raw!==1?"s":""}`}}
+      },
+      scales:{
+        x:{ticks:{color:"#9aa0b8",font:{size:11}},grid:{color:"rgba(255,255,255,0.04)"}},
+        y:{beginAtZero:true,ticks:{color:"#9aa0b8",stepSize:1},grid:{color:"rgba(255,255,255,0.06)"}}
+      }
+    }
+  });
+}
+
+function renderStatusChart(pending, resolved) {
+  const ctx = document.getElementById("statusChart").getContext("2d");
+  if (statusChartInstance) statusChartInstance.destroy();
+  statusChartInstance = new Chart(ctx, {
+    type:"doughnut",
+    data:{
+      labels:["Pending","Resolved"],
+      datasets:[{data:[pending,resolved],
+        backgroundColor:["rgba(245,158,11,0.7)","rgba(52,211,153,0.7)"],
+        borderColor:["#f59e0b","#34d399"],borderWidth:1}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:"#9aa0b8",font:{size:12},padding:16}}},
+      cutout:"65%"
+    }
+  });
+}
+
+// ── Pending Queries ────────────────────────────────────────────────
+async function loadPending() {
+  const data  = await fetch("/admin/queries?status=pending").then(r=>r.json());
+  const list  = document.getElementById("list-pending");
+  const empty = document.getElementById("empty-pending");
+  list.innerHTML = "";
+
+  renderFreqChart(data);
+
+  if (data.length === 0) { empty.style.display="block"; return; }
+  empty.style.display = "none";
+
+  data.forEach(q => {
+    const freqHtml = q.frequency>1 ? `<span class="freq-badge">Asked ${q.frequency}&times;</span>` : "";
+    const div = document.createElement("div");
+    div.className = "query"; div.id = "q-"+q.id;
+    div.innerHTML = `
+      <span class="badge badge-pending">Pending</span>
+      <h4 style="margin:0 0 4px;padding-right:90px;">${esc(q.query)}${freqHtml}</h4>
+      <div class="meta">${q.created_at?"Received: "+q.created_at.slice(0,16):""}</div>
+      <div style="margin-top:12px;">
+        <label>Answer *</label>
+        <textarea class="ans" placeholder="Type a clear answer…"></textarea>
+        <label>Intent <span style="color:#5a607a;">(optional — auto-generated if blank)</span></label>
+        <input type="text" class="intent" placeholder="e.g. lab_timings">
+        <label>Pattern <span style="color:#5a607a;">(optional — query used if blank)</span></label>
+        <input type="text" class="pattern" placeholder="e.g. lab hours">
+      </div>
+      <div class="btn-row">
+        <button class="btn-save">Save &amp; Resolve</button>
+        <button class="btn-delete">Delete</button>
+      </div>`;
+
+    div.querySelector(".btn-save").onclick = async function() {
+      const btn=this, ans=div.querySelector(".ans").value,
+            intent=div.querySelector(".intent").value,
+            pattern=div.querySelector(".pattern").value;
+      if (!ans.trim()) { toast("Answer required",false); return; }
+      btn.innerText="Saving…"; btn.disabled=true;
+      const res = await fetch("/admin/answer",{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({query_id:q.id,answer:ans,intent,pattern})
+      });
+      const d = await res.json();
+      if (d.success) {
+        btn.innerText="Saved ✓"; btn.style.background="#22c55e";
+        toast("Saved successfully ✅");
+        setTimeout(()=>{div.remove();loadStats();checkEmpty("pending");},800);
+      } else {
+        toast("Error saving ❌",false); btn.innerText="Save & Resolve"; btn.disabled=false;
+      }
+    };
+
+    div.querySelector(".btn-delete").onclick = async function() {
+      if (!confirm(`Delete "${q.query}"? This cannot be undone.`)) return;
+      const d = await fetch(`/admin/delete/${q.id}`,{method:"DELETE"}).then(r=>r.json());
+      if (d.success) {
+        div.style.opacity="0"; div.style.transform="translateY(-6px)";
+        setTimeout(()=>{div.remove();loadStats();checkEmpty("pending");},300);
+        toast("Deleted ✓");
+      } else { toast("Error deleting ❌",false); }
+    };
+
+    list.appendChild(div);
+  });
+}
+
+// ── Resolved Queries ───────────────────────────────────────────────
+async function loadResolved() {
+  const data  = await fetch("/admin/queries?status=resolved").then(r=>r.json());
+  const list  = document.getElementById("list-resolved");
+  const empty = document.getElementById("empty-resolved");
+  list.innerHTML = "";
+
+  if (data.length===0) { empty.style.display="block"; return; }
+  empty.style.display = "none";
+
+  data.forEach(q => {
+    const div = document.createElement("div");
+    div.className = "query";
+    div.innerHTML = `
+      <span class="badge badge-resolved">Resolved</span>
+      <h4 style="margin:0 0 4px;padding-right:90px;">${esc(q.query)}</h4>
+      <div class="meta">${q.created_at?"Received: "+q.created_at.slice(0,16):""}</div>
+      <div class="resolved-answer">${esc(q.admin_answer||"—")}</div>
+      <div class="btn-row">
+        <button class="btn-delete">Delete</button>
+      </div>`;
+
+    div.querySelector(".btn-delete").onclick = async function() {
+      if (!confirm("Delete this resolved query?")) return;
+      const d = await fetch(`/admin/delete/${q.id}`,{method:"DELETE"}).then(r=>r.json());
+      if (d.success) {
+        div.style.opacity="0";
+        setTimeout(()=>{div.remove();loadStats();checkEmpty("resolved");},300);
+        toast("Deleted ✓");
+      } else { toast("Error deleting ❌",false); }
+    };
+
+    list.appendChild(div);
+  });
+}
+
+// ── Knowledge Base ─────────────────────────────────────────────────
+async function loadKnowledgeBase() {
+  const data  = await fetch("/admin/knowledge").then(r=>r.json());
+  const list  = document.getElementById("list-kb");
+  const empty = document.getElementById("empty-kb");
+  list.innerHTML = "";
+
+  if (data.length===0) { empty.style.display="block"; return; }
+  empty.style.display = "none";
+
+  data.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "kb-card"; div.id = "kb-"+item.id;
+
+    const label = item.intent.replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase());
+    const patTags = (item.patterns||[]).map(p=>
+      `<span class="ptag">${esc(p)}</span>`
+    ).join("") || `<span style="color:#5a607a;font-size:12px;">No patterns yet</span>`;
+
+    div.innerHTML = `
+      <span class="badge badge-kb">${esc(item.intent)}</span>
+      <h4 style="margin:0 0 6px;padding-right:120px;font-size:14px;">${esc(label)}</h4>
+
+      <div style="font-size:11px;color:#5a607a;margin-bottom:6px;">Patterns (triggers):</div>
+      <div class="pattern-tags" id="ptags-${item.id}">${patTags}</div>
+
+      <div class="kb-answer" id="kb-answer-${item.id}">${esc(item.answer)}</div>
+      <div class="meta">${item.created_at?"Added: "+item.created_at.slice(0,10):""}</div>
+
+      <div class="edit-form" id="edit-${item.id}">
+        <label>Edit Answer</label>
+        <textarea class="edit-ans">${esc(item.answer)}</textarea>
+        <label>Add New Pattern <span style="color:#5a607a;">(optional)</span></label>
+        <input type="text" class="edit-pattern" placeholder="e.g. another trigger phrase">
+        <div class="btn-row">
+          <button class="btn-save btn-update">Update</button>
+          <button class="btn-edit btn-cancel">Cancel</button>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top:10px;">
+        <button class="btn-edit btn-toggle">&#9998; Edit</button>
+        <button class="btn-delete btn-del">&#128465; Delete Intent</button>
+      </div>`;
+
+    div.querySelector(".btn-toggle").onclick = function() {
+      const form = document.getElementById("edit-"+item.id);
+      form.classList.toggle("open");
+      this.innerHTML = form.classList.contains("open") ? "&#10005; Close" : "&#9998; Edit";
+    };
+
+    div.querySelector(".btn-cancel").onclick = function() {
+      document.getElementById("edit-"+item.id).classList.remove("open");
+      div.querySelector(".btn-toggle").innerHTML = "&#9998; Edit";
+    };
+
+    div.querySelector(".btn-update").onclick = async function() {
+      const btn=this;
+      const ans     = div.querySelector(".edit-ans").value.trim();
+      const pattern = div.querySelector(".edit-pattern").value.trim();
+      if (!ans) { toast("Answer cannot be empty",false); return; }
+      btn.innerText="Saving…"; btn.disabled=true;
+
+      const res = await fetch("/admin/update-intent", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          intent: item.intent,
+          answer: ans,
+          pattern: pattern
+     })
+});
+      const d = await res.json();
+      if (d.success) {
+        toast("Updated ✅");
+        document.getElementById("kb-answer-"+item.id).innerText = ans;
+        if (pattern) {
+          const tags = document.getElementById("ptags-"+item.id);
+          const tag  = document.createElement("span");
+          tag.className="ptag"; tag.textContent=pattern.toLowerCase();
+          tags.appendChild(tag);
+          div.querySelector(".edit-pattern").value="";
+        }
+        document.getElementById("edit-"+item.id).classList.remove("open");
+        div.querySelector(".btn-toggle").innerHTML="&#9998; Edit";
+      } else { toast("Error updating ❌",false); }
+      btn.innerText="Update"; btn.disabled=false;
+    };
+
+    div.querySelector(".btn-del").onclick = async function() {
+      if (!confirm(`Delete intent "${item.intent}" and ALL its patterns? This cannot be undone.`)) return;
+     const d = await fetch(`/admin/delete-intent/${item.intent}`, {
+      method:"DELETE"
+     }).then(r=>r.json());
+      if (d.success) {
+        div.style.opacity="0"; div.style.transform="translateY(-4px)";
+        setTimeout(()=>{div.remove();loadStats();checkEmpty("kb");},300);
+        toast("Deleted ✓");
+      } else { toast("Error deleting ❌",false); }
+    };
+
+    list.appendChild(div);
+  });
+}
+
+// ── Search ─────────────────────────────────────────────────────────
+["pending","resolved","kb"].forEach(tab => {
+  document.getElementById("search-"+tab).addEventListener("input", function() {
+    const val = this.value.toLowerCase();
+    document.querySelectorAll("#list-"+tab+" > div").forEach(el => {
+      el.style.display = el.innerText.toLowerCase().includes(val) ? "" : "none";
+    });
+    checkEmpty(tab);
+  });
+});
+// ── Init ───────────────────────────────────────────────────────────
+loadStats();
+loadPending();
+setInterval(loadStats, 10000);
+</script>
+</body>
+</html>
