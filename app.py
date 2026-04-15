@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, request, jsonify, session, redirect
 from chatbot import get_bot_response
 from database import get_db, init_db
@@ -315,4 +317,4 @@ def initialize_db():
 # 🚀 RUN
 # ─────────────────────────────────────────────
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
