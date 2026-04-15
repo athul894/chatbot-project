@@ -1,0 +1,5 @@
+id,course_name,fee_amount,description,created_at
+1,CSE,150000.00,"Computer Science & Engineering","2026-04-10 23:26:30"
+2,ECE,140000.00,"Electronics & Communication Engineering","2026-04-10 23:26:30"
+3,EEE,130000.00,"Electrical and Electronics Engineering","2026-04-10 23:26:30"
+4,ME,120000.00,"Mechanical Engineering","2026-04-10 23:26:30"

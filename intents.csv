@@ -1,0 +1,11 @@
+id,intent,answer,created_at
+1,greeting,"Hello! Welcome to the College Enquiry System. How can I assist you today?","2026-04-10 23:26:13"
+2,farewell,"Goodbye! Have a great day!","2026-04-10 23:26:13"
+3,admission,"Admissions are open. You can apply online or visit the campus with required documents.","2026-04-10 23:26:13"
+4,courses,"We offer B.Tech (CSE, ECE, ME, CE), BCA, MCA, MBA, and M.Tech programs.","2026-04-10 23:26:13"
+5,timing,"College timings are 9 AM to 4:30 PM (Mon–Fri).","2026-04-10 23:26:13"
+6,hostel,"Hostel facilities are available with WiFi, mess, and security.","2026-04-10 23:26:13"
+7,placement,"Our placement rate is 92%. Top recruiters include TCS, Infosys, and Wipro.","2026-04-10 23:26:13"
+8,contact,"You can contact us at info@college.edu or +91-XXXXXXXXXX.","2026-04-10 23:26:13"
+9,scholarship,"We provide merit-based and need-based scholarships.","2026-04-10 23:26:13"
+10,library,"Our library has over 50,000 books and digital resources.","2026-04-10 23:26:13"
