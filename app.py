@@ -52,16 +52,25 @@ def login():
 
         db = get_db()
         cursor = db.cursor()
-        cursor.execute("SELECT * FROM admins WHERE username=%?", (username,))
+        cursor.execute("SELECT * FROM admins WHERE username=?", (username,))
         user = cursor.fetchone()
         cursor.close()
         db.close()
 
-        if user and bcrypt.checkpw(password.encode("utf-8"), user["password"].encode("utf-8")):
-            session["admin"] = True
-            return redirect("/admin")
+        if user:
+            stored_password = user["password"]
 
-        error = "Invalid username or password"
+            # Handle both string and bytes safely
+            if isinstance(stored_password, str):
+                stored_password = stored_password.encode("utf-8")
+
+            if bcrypt.checkpw(password.encode("utf-8"), stored_password):
+                session["admin"] = True
+                return redirect("/admin")
+            else:
+                error = "Invalid username or password"
+        else:
+            error = "Invalid username or password"
 
     return render_template("login.html", error=error)
 
@@ -100,7 +109,7 @@ def add_answer():
     db = get_db()
     cursor = db.cursor()
 
-    cursor.execute("SELECT * FROM pending_queries WHERE id=%?", (query_id,))
+    cursor.execute("SELECT * FROM pending_queries WHERE id=?", (query_id,))
     row = cursor.fetchone()
 
     if not row:
@@ -112,17 +121,17 @@ def add_answer():
     use_pattern = pattern if pattern else row["query"].lower().strip()
 
     cursor.execute(
-        "INSERT IGNORE INTO intents (intent, answer) VALUES (%?, %?)",
+        "INSERT OR IGNORE INTO intents (intent, answer) VALUES (?, ?)",
         (use_intent, answer)
     )
 
     cursor.execute(
-        "INSERT IGNORE INTO patterns (pattern, intent) VALUES (%?, %?)",
+        "INSERT OR IGNORE INTO patterns (pattern, intent) VALUES (?, ?)",
         (use_pattern, use_intent)
     )
 
     cursor.execute(
-        "UPDATE pending_queries SET status='resolved', admin_answer=%? WHERE id=%?",
+        "UPDATE pending_queries SET status='resolved', admin_answer=? WHERE id=?",
         (answer, query_id)
     )
 
@@ -149,13 +158,13 @@ def update_intent():
 
     try:
         cursor.execute(
-            "UPDATE intents SET answer=%? WHERE intent=%?",
+            "UPDATE intents SET answer=? WHERE intent=?",
             (answer, intent)
         )
 
         if new_pattern and new_pattern.strip():
             cursor.execute(
-                "INSERT IGNORE INTO patterns (pattern, intent) VALUES (%?, %?)",
+                "INSERT OR IGNORE INTO patterns (pattern, intent) VALUES (?, ?)",
                 (new_pattern.strip().lower(), intent)
             )
 
@@ -180,8 +189,8 @@ def delete_intent(intent):
     cursor = db.cursor()
 
     try:
-        cursor.execute("DELETE FROM patterns WHERE intent=%?", (intent,))
-        cursor.execute("DELETE FROM intents WHERE intent=%?", (intent,))
+        cursor.execute("DELETE FROM patterns WHERE intent=?", (intent,))
+        cursor.execute("DELETE FROM intents WHERE intent=?", (intent,))
 
         db.commit()
         return jsonify({"success": True})
@@ -206,7 +215,7 @@ def get_queries():
     cursor = db.cursor()
 
     cursor.execute(
-        "SELECT * FROM pending_queries WHERE status=%? ORDER BY created_at DESC",
+        "SELECT * FROM pending_queries WHERE status=? ORDER BY created_at DESC",
         (status,)
     )
 
@@ -216,7 +225,7 @@ def get_queries():
     db.close()
 
     for q in queries:
-        if q.get("created_at"):
+        if q["created_at"] is not None:
             q["created_at"] = str(q["created_at"])
 
     return jsonify(queries)
@@ -230,7 +239,7 @@ def delete_query(query_id):
     db = get_db()
     cursor = db.cursor()
 
-    cursor.execute("DELETE FROM pending_queries WHERE id=%?", (query_id,))
+    cursor.execute("DELETE FROM pending_queries WHERE id=?", (query_id,))
     db.commit()
 
     cursor.close()
@@ -295,7 +304,7 @@ def get_knowledge():
 
     for row in data:
         row["patterns"] = row["patterns"].split("|||") if row["patterns"] else []
-        if row.get("created_at"):
+        if row["created_at"] is not None:
             row["created_at"] = str(row["created_at"])
 
     cursor.close()
