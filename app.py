@@ -220,6 +220,7 @@ def get_queries():
     )
 
     queries = cursor.fetchall()
+    queries = [dict(q) for q in queries]    
 
     cursor.close()
     db.close()
