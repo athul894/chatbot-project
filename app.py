@@ -52,7 +52,7 @@ def login():
 
         db = get_db()
         cursor = db.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM admins WHERE username=%s", (username,))
+        cursor.execute("SELECT * FROM admins WHERE username=%?", (username,))
         user = cursor.fetchone()
         cursor.close()
         db.close()
@@ -100,7 +100,7 @@ def add_answer():
     db = get_db()
     cursor = db.cursor(dictionary=True)
 
-    cursor.execute("SELECT * FROM pending_queries WHERE id=%s", (query_id,))
+    cursor.execute("SELECT * FROM pending_queries WHERE id=%?", (query_id,))
     row = cursor.fetchone()
 
     if not row:
@@ -112,17 +112,17 @@ def add_answer():
     use_pattern = pattern if pattern else row["query"].lower().strip()
 
     cursor.execute(
-        "INSERT IGNORE INTO intents (intent, answer) VALUES (%s, %s)",
+        "INSERT IGNORE INTO intents (intent, answer) VALUES (%?, %?)",
         (use_intent, answer)
     )
 
     cursor.execute(
-        "INSERT IGNORE INTO patterns (pattern, intent) VALUES (%s, %s)",
+        "INSERT IGNORE INTO patterns (pattern, intent) VALUES (%?, %?)",
         (use_pattern, use_intent)
     )
 
     cursor.execute(
-        "UPDATE pending_queries SET status='resolved', admin_answer=%s WHERE id=%s",
+        "UPDATE pending_queries SET status='resolved', admin_answer=%? WHERE id=%?",
         (answer, query_id)
     )
 
@@ -149,13 +149,13 @@ def update_intent():
 
     try:
         cursor.execute(
-            "UPDATE intents SET answer=%s WHERE intent=%s",
+            "UPDATE intents SET answer=%? WHERE intent=%?",
             (answer, intent)
         )
 
         if new_pattern and new_pattern.strip():
             cursor.execute(
-                "INSERT IGNORE INTO patterns (pattern, intent) VALUES (%s, %s)",
+                "INSERT IGNORE INTO patterns (pattern, intent) VALUES (%?, %?)",
                 (new_pattern.strip().lower(), intent)
             )
 
@@ -180,8 +180,8 @@ def delete_intent(intent):
     cursor = db.cursor()
 
     try:
-        cursor.execute("DELETE FROM patterns WHERE intent=%s", (intent,))
-        cursor.execute("DELETE FROM intents WHERE intent=%s", (intent,))
+        cursor.execute("DELETE FROM patterns WHERE intent=%?", (intent,))
+        cursor.execute("DELETE FROM intents WHERE intent=%?", (intent,))
 
         db.commit()
         return jsonify({"success": True})
@@ -206,7 +206,7 @@ def get_queries():
     cursor = db.cursor(dictionary=True)
 
     cursor.execute(
-        "SELECT * FROM pending_queries WHERE status=%s ORDER BY created_at DESC",
+        "SELECT * FROM pending_queries WHERE status=%? ORDER BY created_at DESC",
         (status,)
     )
 
@@ -230,7 +230,7 @@ def delete_query(query_id):
     db = get_db()
     cursor = db.cursor()
 
-    cursor.execute("DELETE FROM pending_queries WHERE id=%s", (query_id,))
+    cursor.execute("DELETE FROM pending_queries WHERE id=%?", (query_id,))
     db.commit()
 
     cursor.close()
@@ -245,7 +245,7 @@ def delete_query(query_id):
 @app.route("/admin/stats")
 def get_stats():
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
 
     cursor.execute("SELECT COUNT(*) as count FROM pending_queries WHERE status='pending'")
     pending = cursor.fetchone()["count"]
