@@ -48,7 +48,7 @@ def lookup_fee(user_input):
         return None
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT course_name, fee_amount, description FROM course_fees")
     courses = cursor.fetchall()
     cursor.close()
@@ -61,7 +61,7 @@ def lookup_fee(user_input):
 
     # fallback: show all fees
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT course_name, fee_amount FROM course_fees ORDER BY course_name")
     all_fees = cursor.fetchall()
     cursor.close()
@@ -87,7 +87,7 @@ def find_response(user_input):
     tokens = {t for t in clean.split() if t not in STOPWORDS}
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
 
     cursor.execute("""
         SELECT p.pattern, i.answer
@@ -145,22 +145,22 @@ def find_response(user_input):
 def save_pending_query(query, session_id="default"):
     clean = query.strip().lower()
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
 
     cursor.execute(
-        "SELECT id FROM pending_queries WHERE query=%s AND status='pending'",
+        "SELECT id FROM pending_queries WHERE query=? AND status='pending'",
         (clean,)
     )
     existing = cursor.fetchone()
 
     if existing:
         cursor.execute(
-            "UPDATE pending_queries SET frequency = frequency + 1 WHERE id=%s",
+            "UPDATE pending_queries SET frequency = frequency + 1 WHERE id=?",
             (existing["id"],)
         )
     else:
         cursor.execute(
-            "INSERT INTO pending_queries (query, session_id) VALUES (%s, %s)",
+            "INSERT INTO pending_queries (query, session_id) VALUES (?, ?)",
             (clean, session_id)
         )
 

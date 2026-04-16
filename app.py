@@ -51,7 +51,7 @@ def login():
         password = request.form.get("password")
 
         db = get_db()
-        cursor = db.cursor(dictionary=True)
+        cursor = db.cursor()
         cursor.execute("SELECT * FROM admins WHERE username=%?", (username,))
         user = cursor.fetchone()
         cursor.close()
@@ -98,7 +98,7 @@ def add_answer():
         return jsonify({"success": False, "error": "Missing fields"})
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
 
     cursor.execute("SELECT * FROM pending_queries WHERE id=%?", (query_id,))
     row = cursor.fetchone()
@@ -203,7 +203,7 @@ def get_queries():
     status = request.args.get("status", "pending")
 
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
 
     cursor.execute(
         "SELECT * FROM pending_queries WHERE status=%? ORDER BY created_at DESC",
@@ -276,7 +276,7 @@ def get_stats():
 @app.route("/admin/knowledge")
 def get_knowledge():
     db = get_db()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
 
     cursor.execute("""
         SELECT 
