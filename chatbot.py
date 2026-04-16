@@ -56,7 +56,7 @@ def lookup_fee(user_input):
 
     for row in courses:
         if row["course_name"].lower() in clean:
-            desc = f" ({row['description']})" if row.get("description") else ""
+            desc = f" ({row['description']})" if row["description"] else ""
             return f"The annual fee for {row['course_name']}{desc} is ₹{int(row['fee_amount']):,}/- per year."
 
     # fallback: show all fees

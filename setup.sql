@@ -1,14 +1,31 @@
--- Run this ONCE in MySQL to create the database
--- Then visit http://localhost:5000/init-db to populate tables
+-- Admins table
+CREATE TABLE IF NOT EXISTS admins (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE,
+    password TEXT
+);
 
-CREATE DATABASE IF NOT EXISTS chatbot_db
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
+-- Intents
+CREATE TABLE IF NOT EXISTS intents (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    intent TEXT,
+    answer TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-USE chatbot_db;
+-- Patterns
+CREATE TABLE IF NOT EXISTS patterns (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pattern TEXT,
+    intent TEXT
+);
 
--- Tables are auto-created by database.py init_db()
--- Just run this file to create the database, then hit /init-db
-
--- If you want to manually reset everything:
--- DROP TABLE IF EXISTS conversation_log, pending_queries, patterns, intents, course_fees;
+-- Pending queries
+CREATE TABLE IF NOT EXISTS pending_queries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    query TEXT,
+    session_id TEXT,
+    status TEXT DEFAULT 'pending',
+    frequency INTEGER DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
