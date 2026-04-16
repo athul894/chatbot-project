@@ -80,8 +80,7 @@ def login():
 # ─────────────────────────────────────────────
 @app.route("/logout")
 def logout():
-    if not session.get("admin"):
-        return redirect("/login")
+    
     session.clear()
     return redirect("/")
 
@@ -91,8 +90,7 @@ def logout():
 # ─────────────────────────────────────────────
 @app.route("/admin")
 def admin():
-    if not session.get("admin"):
-        return redirect("/login")
+    
     return render_template("admin.html")
 
 
@@ -101,8 +99,7 @@ def admin():
 # ─────────────────────────────────────────────
 @app.route("/admin/answer", methods=["POST"])
 def add_answer():
-    if not session.get("admin"):
-        return jsonify({"success": False, "error": "Unauthorized"}), 401
+    
     data = request.json
     query_id = data.get("query_id")
     answer = data.get("answer", "").strip()
@@ -153,9 +150,7 @@ def add_answer():
 # ─────────────────────────────────────────────
 @app.route("/admin/update-intent", methods=["POST"])
 def update_intent():
-    if not session.get("admin"):
-        return jsonify({"success": False, "error": "Unauthorized"}), 401
-
+    
     data = request.get_json()
 
     intent = data.get("intent")
@@ -194,8 +189,7 @@ def update_intent():
 # ─────────────────────────────────────────────
 @app.route("/admin/delete-intent/<intent>", methods=["DELETE"])
 def delete_intent(intent):
-    if not session.get("admin"):
-        return jsonify({"success": False, "error": "Unauthorized"}), 401
+    
     db = get_db()
     cursor = db.cursor()
 
@@ -220,8 +214,7 @@ def delete_intent(intent):
 # ─────────────────────────────────────────────
 @app.route("/admin/queries")
 def get_queries():
-    if not session.get("admin"):
-        return redirect("/login")
+   
 
 
     status = request.args.get("status", "pending")
@@ -252,8 +245,7 @@ def get_queries():
 # ─────────────────────────────────────────────
 @app.route("/admin/delete/<int:query_id>", methods=["DELETE"])
 def delete_query(query_id):
-    if not session.get("admin"):
-        return jsonify({"success": False, "error": "Unauthorized"}), 401
+    
     db = get_db()
     cursor = db.cursor()
 
@@ -271,8 +263,7 @@ def delete_query(query_id):
 # ─────────────────────────────────────────────
 @app.route("/admin/stats")
 def get_stats():
-    if not session.get("admin"):
-        return redirect("/login")
+    
     db = get_db()
     cursor = db.cursor()
 
@@ -304,8 +295,7 @@ def get_stats():
 # ─────────────────────────────────────────────
 @app.route("/admin/knowledge")
 def get_knowledge():
-    if not session.get("admin"):
-        return redirect("/login")
+    
     db = get_db()
     cursor = db.cursor()
 
@@ -340,15 +330,13 @@ def get_knowledge():
 # ─────────────────────────────────────────────
 @app.route("/init-db")
 def initialize_db():
-    if not session.get("admin"):
-        return redirect("/login")   
+       
     init_db()
     return "✅ Database initialised successfully!"
 
 @app.route("/create-admin")
 def create_admin():
-    if not session.get("admin"):
-        return redirect("/login")
+    
     import bcrypt
     db = get_db()
     cursor = db.cursor()
