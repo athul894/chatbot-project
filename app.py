@@ -321,23 +321,6 @@ def initialize_db():
     init_db()
     return "✅ Database initialised successfully!"
 
-@app.route("/create-admin")
-def create_admin():
-    import bcrypt
-    db = get_db()
-    cursor = db.cursor()
-
-    password = bcrypt.hashpw("admin123".encode(), bcrypt.gensalt())
-
-    cursor.execute(
-        "INSERT INTO admins (username, password) VALUES (?, ?)",
-        ("admin", password)
-    )
-
-    db.commit()
-    db.close()
-
-    return "Admin created"
 
 # ─────────────────────────────────────────────
 # 🚀 RUN
