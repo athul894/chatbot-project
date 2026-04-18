@@ -1,5 +1,6 @@
 import re
 from database import get_db
+from difflib import SequenceMatcher  # 🔥 NEW
 
 
 # ─────────────────────────────────────────────
@@ -23,7 +24,6 @@ COLLEGE_KEYWORDS = {
     "sports", "club", "clubs", "activity", "activities", "event", "events",
 }
 
-# 🔥 STOPWORDS (NEW FIX)
 STOPWORDS = {"who", "is", "the", "what", "where", "when", "a", "an", "of"}
 
 
@@ -59,7 +59,6 @@ def lookup_fee(user_input):
             desc = f" ({row['description']})" if row["description"] else ""
             return f"The annual fee for {row['course_name']}{desc} is ₹{int(row['fee_amount']):,}/- per year."
 
-    # fallback: show all fees
     db = get_db()
     cursor = db.cursor()
     cursor.execute("SELECT course_name, fee_amount FROM course_fees ORDER BY course_name")
@@ -78,12 +77,10 @@ def lookup_fee(user_input):
 
 
 # ─────────────────────────────────────────────
-# 🔍 FIND RESPONSE (UPDATED FIX)
+# 🔍 FIND RESPONSE (UPDATED FIX + AUTO-LEARN BOOST)
 # ─────────────────────────────────────────────
 def find_response(user_input):
     clean = re.sub(r"[^\w\s]", " ", user_input.lower()).strip()
-
-    # 🔥 remove stopwords
     tokens = {t for t in clean.split() if t not in STOPWORDS}
 
     db = get_db()
@@ -112,8 +109,6 @@ def find_response(user_input):
 
     for row in rows:
         pattern = re.sub(r"[^\w\s]", " ", row["pattern"].lower()).strip()
-
-        # 🔥 remove stopwords from pattern
         pattern_tokens = {t for t in pattern.split() if t not in STOPWORDS}
 
         if not pattern_tokens:
@@ -121,18 +116,22 @@ def find_response(user_input):
 
         norm_pattern = {normalise(t) for t in pattern_tokens}
 
-        # 🔥 exact match (strong match)
+        # exact match
         if norm_pattern == norm_tokens:
             return row["answer"]
 
         overlap = len(norm_pattern & norm_tokens)
         score = overlap / len(norm_pattern)
 
+        # 🔥 NEW: similarity boost
+        similarity = SequenceMatcher(None, clean, pattern).ratio()
+        score = max(score, similarity)
+
         if score > best_score:
             best_score = score
             best_answer = row["answer"]
 
-    # 🔥 stricter threshold
+    # 🔥 slightly smarter thresholding
     if best_score >= 0.6:
         return best_answer
 
@@ -178,24 +177,20 @@ def get_bot_response(user_input, session_id="default"):
     if not user_input:
         return {"response": "Please type a message.", "pending": False}
 
-    # Step 1: Fee lookup
     fee_answer = lookup_fee(user_input)
     if fee_answer:
         return {"response": fee_answer, "pending": False}
 
-    # Step 2: Knowledge base
     answer = find_response(user_input)
     if answer:
         return {"response": answer, "pending": False}
 
-    # Step 3: Off-topic filter
     if not is_college_related(user_input):
         return {
             "response": "I can only answer questions related to our college — admissions, courses, fees, hostel, placements, and more.",
             "pending": False
         }
 
-    # Step 4: Save unknown query
     if is_valid_query(user_input):
         save_pending_query(user_input, session_id)
         return {
@@ -203,7 +198,6 @@ def get_bot_response(user_input, session_id="default"):
             "pending": True
         }
 
-    # Step 5: vague query
     return {
         "response": "Please ask a more specific question.",
         "pending": False

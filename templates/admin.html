@@ -320,7 +320,7 @@ async function loadPending() {
         <label>Intent <span style="color:#5a607a;">(optional — auto-generated if blank)</span></label>
         <input type="text" class="intent" placeholder="e.g. lab_timings">
         <label>Pattern <span style="color:#5a607a;">(optional — query used if blank)</span></label>
-        <input type="text" class="pattern" placeholder="e.g. lab hours">
+        <input type="text" class="pattern" placeholder="e.g. lab hours" value="${esc(q.query)}">
       </div>
       <div class="btn-row">
         <button class="btn-save">Save &amp; Resolve</button>
