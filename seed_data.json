@@ -1,0 +1,157 @@
+{
+  "intents": [
+    {
+      "intent": "greeting",
+      "answer": "Hello! How can I help you today?",
+      "patterns": [
+        "hi", "hello", "hey", "hey there", "hi there",
+        "good morning", "good evening", "good afternoon",
+        "yo", "hello bot", "hi chatbot", "hey assistant"
+      ]
+    },
+    {
+      "intent": "cse_hod",
+      "answer": "The HOD of CSE is Dr. XYZ.",
+      "patterns": [
+        "who is hod of cse",
+        "cse hod name",
+        "head of cse department",
+        "who is cse head",
+        "who is the hod for cse",
+        "tell me cse hod",
+        "name of cse hod",
+        "who heads cse department",
+        "who is the head of computer science department",
+        "cse department head name"
+      ]
+    },
+    {
+      "intent": "college_timing",
+      "answer": "College timings are 9 AM to 4 PM, Monday to Friday.",
+      "patterns": [
+        "college timings",
+        "what are college hours",
+        "when does college start",
+        "college schedule",
+        "timings of college",
+        "what time college starts",
+        "what time college ends",
+        "college opening time",
+        "college closing time",
+        "working hours of college"
+      ]
+    },
+    {
+      "intent": "admission_process",
+      "answer": "You can apply online through the official website or visit the admission office.",
+      "patterns": [
+        "how to apply",
+        "admission process",
+        "how to get admission",
+        "apply for college",
+        "how can i join college",
+        "procedure for admission",
+        "steps for admission",
+        "how do i enroll",
+        "how to take admission",
+        "college admission details"
+      ]
+    },
+    {
+      "intent": "fees_info",
+      "answer": "Fees vary by course. Please specify a course or check the fees section.",
+      "patterns": [
+        "what is the fee",
+        "course fees",
+        "tuition fees",
+        "how much is fee",
+        "fees structure",
+        "how much does course cost",
+        "what are college fees",
+        "tell me fees",
+        "fee details",
+        "total cost of course"
+      ]
+    },
+    {
+      "intent": "placements",
+      "answer": "Our college has strong placement support with top companies visiting every year.",
+      "patterns": [
+        "placement details",
+        "jobs after course",
+        "placement percentage",
+        "companies visiting",
+        "placement record",
+        "what about placements",
+        "placement stats",
+        "are placements good",
+        "average package",
+        "top recruiters"
+      ]
+    },
+    {
+      "intent": "hostel",
+      "answer": "Hostel facilities are available for both boys and girls with mess included.",
+      "patterns": [
+        "hostel available",
+        "accommodation details",
+        "hostel fees",
+        "dorm facility",
+        "is hostel available",
+        "hostel for boys",
+        "hostel for girls",
+        "stay facility",
+        "room facility",
+        "hostel information"
+      ]
+    },
+    {
+      "intent": "library",
+      "answer": "The library is open from 8 AM to 8 PM with a wide collection of books.",
+      "patterns": [
+        "library timing",
+        "books available",
+        "library hours",
+        "reading room",
+        "when is library open",
+        "library schedule",
+        "library open time",
+        "study area",
+        "library facilities",
+        "can i use library"
+      ]
+    },
+    {
+      "intent": "transport",
+      "answer": "College buses are available covering major routes across the city.",
+      "patterns": [
+        "bus facility",
+        "transport available",
+        "college bus routes",
+        "how to reach college",
+        "transport service",
+        "is bus available",
+        "bus timings",
+        "college transport",
+        "travel facility",
+        "pickup and drop"
+      ]
+    },
+    {
+      "intent": "contact",
+      "answer": "You can contact the college office at +91-9876543210 or email info@college.com.",
+      "patterns": [
+        "contact details",
+        "phone number",
+        "email id",
+        "how to contact college",
+        "contact number",
+        "college phone",
+        "college email",
+        "office contact",
+        "how can i reach college",
+        "support contact"
+      ]
+    }
+  ]
+}

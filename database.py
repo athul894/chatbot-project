@@ -1,4 +1,5 @@
 import sqlite3
+import json
 
 
 def get_db():
@@ -6,6 +7,39 @@ def get_db():
     conn = sqlite3.connect("chatbot_v2.db")
     conn.row_factory = sqlite3.Row
     return conn
+
+
+# 🔥 NEW: Seed from JSON
+def seed_from_json(cursor):
+    try:
+        with open("seed_data.json", "r") as f:
+            data = json.load(f)
+    except:
+        print("⚠️ seed_data.json not found")
+        return
+
+    # Prevent duplicate seeding
+    cursor.execute("SELECT COUNT(*) as count FROM intents")
+    if cursor.fetchone()["count"] > 0:
+        print("ℹ️ DB already seeded")
+        return
+
+    for item in data["intents"]:
+        intent = item["intent"]
+        answer = item["answer"]
+
+        cursor.execute(
+            "INSERT INTO intents (intent, answer) VALUES (?, ?)",
+            (intent, answer)
+        )
+
+        for pattern in item["patterns"]:
+            cursor.execute(
+                "INSERT INTO patterns (pattern, intent) VALUES (?, ?)",
+                (pattern.lower(), intent)
+            )
+
+    print("✅ Seed data inserted")
 
 
 def init_db():
@@ -77,6 +111,9 @@ def init_db():
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     """)
+
+    # 🔥 NEW: Seed initial chatbot data
+    seed_from_json(cursor)
 
     conn.commit()
     conn.close()
