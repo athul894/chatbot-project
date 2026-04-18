@@ -152,6 +152,21 @@
         "how can i reach college",
         "support contact"
       ]
+    },
+    {
+      "intent": "scholarship",
+       "answer": "Scholarships are available based on merit and financial need. Please contact the admission office for eligibility details.",
+       "patterns": [
+        "scholarship information",
+        "scholarship details",
+       "is scholarship available",
+       "financial aid",
+       "scholarship eligibility",
+       "fee waiver",
+        "scholarship for students",
+       "any scholarships",
+        "can i get scholarship"
+        ]
     }
   ]
 }

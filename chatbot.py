@@ -1,6 +1,6 @@
 import re
 from database import get_db
-from difflib import SequenceMatcher  # 🔥 NEW
+from difflib import SequenceMatcher  # 🔥 NEW 
 
 
 # ─────────────────────────────────────────────
@@ -83,6 +83,14 @@ def find_response(user_input):
     clean = re.sub(r"[^\w\s]", " ", user_input.lower()).strip()
     tokens = {t for t in clean.split() if t not in STOPWORDS}
 
+    def normalize(word):
+        for suffix in ("tions", "tion", "ments", "ment", "ings", "ing", "s"):
+            if len(word) > len(suffix) + 3 and word.endswith(suffix):
+                return word[:-len(suffix)]
+        return word
+
+    normalized_tokens = {normalize(t) for t in tokens}
+
     db = get_db()
     cursor = db.cursor()
 
@@ -94,18 +102,15 @@ def find_response(user_input):
 
     rows = cursor.fetchall()
     cursor.close()
-    db.close()
-
     best_answer = None
     best_score = 0
 
-    def normalise(word):
-        for suffix in ("tions", "tion", "ments", "ment", "ings", "ing", "s"):
-            if len(word) > len(suffix) + 3 and word.endswith(suffix):
-                return word[:-len(suffix)]
-        return word
+    norm_tokens = {normalize(t) for t in tokens}
+    important_keywords = COLLEGE_KEYWORDS
 
-    norm_tokens = {normalise(t) for t in tokens}
+    # First pass: collect candidates with highest token overlap
+    candidates = []
+    max_overlap = 0
 
     for row in rows:
         pattern = re.sub(r"[^\w\s]", " ", row["pattern"].lower()).strip()
@@ -114,25 +119,49 @@ def find_response(user_input):
         if not pattern_tokens:
             continue
 
-        norm_pattern = {normalise(t) for t in pattern_tokens}
+        norm_pattern = {normalize(t) for t in pattern_tokens}
 
         # exact match
         if norm_pattern == norm_tokens:
             return row["answer"]
 
         overlap = len(norm_pattern & norm_tokens)
-        score = overlap / len(norm_pattern)
+        if overlap > max_overlap:
+            max_overlap = overlap
+        # 🔥 similarity boost
+        similarity = SequenceMatcher(None, clean, pattern).ratio()
+        # Combine overlap and similarity with weights (e.g., 0.7 for overlap, 0.3 for similarity)
+        score = 0.7 * score + 0.3 * similarity
 
-        # 🔥 NEW: similarity boost
+    # If no overlap, consider all patterns as fallback
+    if not candidates:
+        candidates = [(row, {normalize(t) for t in {t for t in re.sub(r"[^\w\s]", " ", row["pattern"].lower()).strip().split() if t not in STOPWORDS}}, 
+                       re.sub(r"[^\w\s]", " ", row["pattern"].lower()).strip()) for row in rows]
+
+    # Second pass: apply SequenceMatcher only to top candidates
+    for row, norm_pattern, pattern in candidates:
+        keyword_overlap = len(norm_pattern & norm_tokens & important_keywords)
+        overlap = len(norm_pattern & norm_tokens)
+        score = overlap / len(norm_pattern) if len(norm_pattern) > 0 else 0
+
+        # 🔥 similarity boost (only for top candidates)
         similarity = SequenceMatcher(None, clean, pattern).ratio()
         score = max(score, similarity)
 
+        # 🔥 boost score if important keyword matches
+        if keyword_overlap > 0:
+            score += 0.3
         if score > best_score:
             best_score = score
             best_answer = row["answer"]
 
     # 🔥 slightly smarter thresholding
-    if best_score >= 0.6:
+        # 🔥 slightly smarter thresholding
+        if best_score >= 0.6:
+            return best_answer
+
+    # Fallback: return best_answer if it meets a lower threshold
+    if best_score >= 0.3:
         return best_answer
 
     return None
