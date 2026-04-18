@@ -76,9 +76,6 @@ def lookup_fee(user_input):
     return None
 
 
-# ─────────────────────────────────────────────
-# 🔍 FIND RESPONSE (UPDATED FIX + AUTO-LEARN BOOST)
-# ─────────────────────────────────────────────
 def find_response(user_input):
     clean = re.sub(r"[^\w\s]", " ", user_input.lower()).strip()
     tokens = {t for t in clean.split() if t not in STOPWORDS}
@@ -89,7 +86,8 @@ def find_response(user_input):
                 return word[:-len(suffix)]
         return word
 
-    normalized_tokens = {normalize(t) for t in tokens}
+    norm_tokens = {normalize(t) for t in tokens}
+    important_keywords = COLLEGE_KEYWORDS
 
     db = get_db()
     cursor = db.cursor()
@@ -102,15 +100,9 @@ def find_response(user_input):
 
     rows = cursor.fetchall()
     cursor.close()
+
     best_answer = None
     best_score = 0
-
-    norm_tokens = {normalize(t) for t in tokens}
-    important_keywords = COLLEGE_KEYWORDS
-
-    # First pass: collect candidates with highest token overlap
-    candidates = []
-    max_overlap = 0
 
     for row in rows:
         pattern = re.sub(r"[^\w\s]", " ", row["pattern"].lower()).strip()
@@ -121,47 +113,30 @@ def find_response(user_input):
 
         norm_pattern = {normalize(t) for t in pattern_tokens}
 
-        # exact match
+        # ✅ Exact match
         if norm_pattern == norm_tokens:
             return row["answer"]
 
-        overlap = len(norm_pattern & norm_tokens)
-        if overlap > max_overlap:
-            max_overlap = overlap
-        # 🔥 similarity boost
-        similarity = SequenceMatcher(None, clean, pattern).ratio()
-        # Combine overlap and similarity with weights (e.g., 0.7 for overlap, 0.3 for similarity)
-        score = 0.7 * score + 0.3 * similarity
-
-    # If no overlap, consider all patterns as fallback
-    if not candidates:
-        candidates = [(row, {normalize(t) for t in {t for t in re.sub(r"[^\w\s]", " ", row["pattern"].lower()).strip().split() if t not in STOPWORDS}}, 
-                       re.sub(r"[^\w\s]", " ", row["pattern"].lower()).strip()) for row in rows]
-
-    # Second pass: apply SequenceMatcher only to top candidates
-    for row, norm_pattern, pattern in candidates:
-        keyword_overlap = len(norm_pattern & norm_tokens & important_keywords)
+        # ✅ Overlap score
         overlap = len(norm_pattern & norm_tokens)
         score = overlap / len(norm_pattern) if len(norm_pattern) > 0 else 0
 
-        # 🔥 similarity boost (only for top candidates)
+        # ✅ Similarity score
         similarity = SequenceMatcher(None, clean, pattern).ratio()
         score = max(score, similarity)
 
-        # 🔥 boost score if important keyword matches
+        # ✅ Keyword boost
+        keyword_overlap = len(norm_pattern & norm_tokens & important_keywords)
         if keyword_overlap > 0:
             score += 0.3
+
+        # ✅ Track best
         if score > best_score:
             best_score = score
             best_answer = row["answer"]
 
-    # 🔥 slightly smarter thresholding
-        # 🔥 slightly smarter thresholding
-        if best_score >= 0.6:
-            return best_answer
-
-    # Fallback: return best_answer if it meets a lower threshold
-    if best_score >= 0.3:
+    # ✅ Final decision
+    if best_score >= 0.7:
         return best_answer
 
     return None
