@@ -167,6 +167,104 @@
        "any scholarships",
         "can i get scholarship"
         ]
-    }
+    },
+    {
+     "intent": "courses_offered",
+     "answer": "We offer various programs including B.Tech (CSE, ECE, Mechanical, Civil), MBA, MCA, and more.",
+      "patterns": [
+       "what courses do you offer",
+        "courses available",
+       "list of courses",
+       "what are the courses",
+       "which courses are available",
+       "courses in your college",
+       "what programs are offered",
+     "degree programs",
+     " what can i study",
+     "available branches",
+     "courses you offer",
+     "list all courses"
+      ]
+    },
+    {
+      "intent": "events",
+      "answer": "We have regular events including tech fests, cultural fests, and sports meets. Check our website for the latest updates.",
+      "patterns": [
+        "upcoming events",
+        "college events",
+        "what events are there",
+        "events schedule",
+        "any events coming up",
+        "events in college",
+        "fest details",
+        "cultural events",
+        "sports events",
+        "tech fest"
+      ]
+    },
+    {
+      "intent": "alumni",
+      "answer": "Our alumni network is strong with many successful professionals in various fields. We have an active alumni association that organizes regular meetups and networking events.",
+      "patterns": [
+        "alumni information",
+        "alumni network",
+        "successful alumni",
+        "alumni association",
+        "alumni meetups",
+        "famous alumni",
+        "alumni achievements",
+        "how to connect with alumni",
+        "alumni events",
+        "alumni support"
+      ]
+    },
+    {
+      "intent": "sports_facilities",
+      "answer": "We have excellent sports facilities including a gym, basketball court, football field, and indoor games area.",
+      "patterns": [
+        "sports facilities",
+        "gym available",
+        "basketball court",
+        "football field",
+        "indoor games",
+        "sports complex",
+        "sports amenities",
+        "fitness center",
+        "sports ground",
+        "athletic facilities"
+      ]
+    },
+    {
+      "intent": "cafeteria",
+      "answer": "Our cafeteria offers a variety of food options including snacks, meals, and beverages at affordable prices.",
+      "patterns": [
+        "cafeteria details",
+        "food options",
+        "cafeteria menu",
+        "is cafeteria available",
+        "cafeteria timings",
+        "what food is available",
+        "cafeteria prices",
+        "canteen facility",
+        "food court",
+        "meal options"
+      ]
+    },
+    {
+      "intent": "lab_timings",
+      "answer": "Lab timings are from 10 AM to 5 PM, Monday to Friday.",
+      "patterns": [
+        "lab timings",
+        "when are labs open",
+        "lab hours",
+        "lab schedule",
+        "lab opening time",
+        "lab closing time",
+        "when can i use lab",
+        "lab availability",
+        "lab access hours",
+        "lab working hours"
+      ]
+    }   
   ]
 }
