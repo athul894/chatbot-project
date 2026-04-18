@@ -265,6 +265,70 @@
         "lab access hours",
         "lab working hours"
       ]
-    }   
+    },
+    {
+      "intent": "faculty",
+      "answer": "Our faculty members are highly qualified and experienced in their respective fields. You can find more information about them on our website.",
+      "patterns": [
+        "faculty information",
+        "who are the faculty",
+        "faculty details",
+        "meet the faculty",
+        "faculty members",
+        "professors in college",
+        "teaching staff",
+        "who teaches here",
+        "faculty qualifications",
+        "faculty experience"
+      ]
+    },
+    {
+      "intent": "research",
+      "answer": "Our college has a strong focus on research with various projects and publications. We encourage students to participate in research activities.",
+      "patterns": [
+        "research opportunities",
+        "research projects",
+        "can i do research",
+        "research facilities",
+        "research publications",
+        "how to get involved in research",
+        "research areas",
+        "faculty research",
+        "student research",
+        "research support"
+      ]
+    },
+    {
+      "intent": "extracurricular",
+      "answer": "We offer a wide range of extracurricular activities including clubs, societies, and sports teams. You can join based on your interests.",
+      "patterns": [
+        "extracurricular activities",
+        "clubs and societies",
+        "sports teams",
+        "what extracurriculars are there",
+        "can i join clubs",
+        "extracurricular options",
+        "activities outside class",
+        "student organizations",
+        "how to get involved in extracurriculars",
+        "extracurricular opportunities"
+      ]
+    }  ,
+    {
+      "intent": "admission_process",
+      "answer": "The admission process for our college involves submitting an application form, providing necessary documents, and appearing for an entrance test or interview.",
+      "patterns": [
+        "admission process",
+        "how to apply",
+        "what is the admission procedure",
+        "admission requirements",
+        "documents needed for admission",
+        "entrance test details",
+        "interview process",
+        "application form",
+        "admission timeline",
+        "when can i apply"
+      ]
+    }
   ]
 }
