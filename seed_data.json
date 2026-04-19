@@ -4,9 +4,18 @@
       "intent": "greeting",
       "answer": "Hello! How can I help you today?",
       "patterns": [
-        "hi", "hello", "hey", "hey there", "hi there",
-        "good morning", "good evening", "good afternoon",
-        "yo", "hello bot", "hi chatbot", "hey assistant"
+        "hi",
+        "hello",
+        "hey",
+        "hey there",
+        "hi there",
+        "good morning",
+        "good evening",
+        "good afternoon",
+        "yo",
+        "hello bot",
+        "hi chatbot",
+        "hey assistant"
       ]
     },
     {
@@ -38,7 +47,9 @@
         "what time college ends",
         "college opening time",
         "college closing time",
-        "working hours of college"
+        "working hours of college",
+        "timings",
+        "timing"
       ]
     },
     {
@@ -54,7 +65,9 @@
         "steps for admission",
         "how do i enroll",
         "how to take admission",
-        "college admission details"
+        "college admission details",
+        "admissions",
+        "admission"
       ]
     },
     {
@@ -70,7 +83,8 @@
         "what are college fees",
         "tell me fees",
         "fee details",
-        "total cost of course"
+        "total cost of course",
+        "fees"
       ]
     },
     {
@@ -86,7 +100,9 @@
         "placement stats",
         "are placements good",
         "average package",
-        "top recruiters"
+        "top recruiters",
+        "placements",
+        "placement"
       ]
     },
     {
@@ -102,7 +118,8 @@
         "hostel for girls",
         "stay facility",
         "room facility",
-        "hostel information"
+        "hostel information",
+        "hostel"
       ]
     },
     {
@@ -118,7 +135,8 @@
         "library open time",
         "study area",
         "library facilities",
-        "can i use library"
+        "can i use library",
+        "library"
       ]
     },
     {
@@ -134,7 +152,9 @@
         "bus timings",
         "college transport",
         "travel facility",
-        "pickup and drop"
+        "pickup and drop",
+        "transport",
+        "bus"
       ]
     },
     {
@@ -150,40 +170,45 @@
         "college email",
         "office contact",
         "how can i reach college",
-        "support contact"
+        "support contact",
+        "contact"
       ]
     },
     {
       "intent": "scholarship",
-       "answer": "Scholarships are available based on merit and financial need. Please contact the admission office for eligibility details.",
-       "patterns": [
+      "answer": "Scholarships are available based on merit and financial need. Please contact the admission office for eligibility details.",
+      "patterns": [
         "scholarship information",
         "scholarship details",
-       "is scholarship available",
-       "financial aid",
-       "scholarship eligibility",
-       "fee waiver",
+        "is scholarship available",
+        "financial aid",
+        "scholarship eligibility",
+        "fee waiver",
         "scholarship for students",
-       "any scholarships",
-        "can i get scholarship"
-        ]
+        "any scholarships",
+        "can i get scholarship",
+        "scholarship",
+        "scholarships"
+      ]
     },
     {
-     "intent": "courses_offered",
-     "answer": "We offer various programs including B.Tech (CSE, ECE, Mechanical, Civil), MBA, MCA, and more.",
+      "intent": "courses_offered",
+      "answer": "We offer various programs including B.Tech (CSE, ECE, Mechanical, Civil), MBA, MCA, and more.",
       "patterns": [
-       "what courses do you offer",
+        "what courses do you offer",
         "courses available",
-       "list of courses",
-       "what are the courses",
-       "which courses are available",
-       "courses in your college",
-       "what programs are offered",
-     "degree programs",
-     " what can i study",
-     "available branches",
-     "courses you offer",
-     "list all courses"
+        "list of courses",
+        "what are the courses",
+        "which courses are available",
+        "courses in your college",
+        "what programs are offered",
+        "degree programs",
+        " what can i study",
+        "available branches",
+        "courses you offer",
+        "list all courses",
+        "courses",
+        "course"
       ]
     },
     {
@@ -199,7 +224,9 @@
         "fest details",
         "cultural events",
         "sports events",
-        "tech fest"
+        "tech fest",
+        "events",
+        "event"
       ]
     },
     {
@@ -215,7 +242,8 @@
         "alumni achievements",
         "how to connect with alumni",
         "alumni events",
-        "alumni support"
+        "alumni support",
+        "alumni"
       ]
     },
     {
@@ -231,7 +259,9 @@
         "sports amenities",
         "fitness center",
         "sports ground",
-        "athletic facilities"
+        "athletic facilities",
+        "sports",
+        "gym"
       ]
     },
     {
@@ -247,7 +277,9 @@
         "cafeteria prices",
         "canteen facility",
         "food court",
-        "meal options"
+        "meal options",
+        "cafeteria",
+        "canteen"
       ]
     },
     {
@@ -263,7 +295,9 @@
         "when can i use lab",
         "lab availability",
         "lab access hours",
-        "lab working hours"
+        "lab working hours",
+        "lab",
+        "labs"
       ]
     },
     {
@@ -279,7 +313,8 @@
         "teaching staff",
         "who teaches here",
         "faculty qualifications",
-        "faculty experience"
+        "faculty experience",
+        "faculty"
       ]
     },
     {
@@ -295,7 +330,8 @@
         "research areas",
         "faculty research",
         "student research",
-        "research support"
+        "research support",
+        "research"
       ]
     },
     {
@@ -311,9 +347,12 @@
         "activities outside class",
         "student organizations",
         "how to get involved in extracurriculars",
-        "extracurricular opportunities"
+        "extracurricular opportunities",
+        "extracurricular",
+        "clubs",
+        "club"
       ]
-    }  ,
+    },
     {
       "intent": "admission_process",
       "answer": "The admission process for our college involves submitting an application form, providing necessary documents, and appearing for an entrance test or interview.",
@@ -327,7 +366,9 @@
         "interview process",
         "application form",
         "admission timeline",
-        "when can i apply"
+        "when can i apply",
+        "admissions",
+        "admission"
       ]
     }
   ]
