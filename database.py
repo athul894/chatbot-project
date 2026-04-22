@@ -12,10 +12,10 @@ def get_db():
 # 🔥 NEW: Seed from JSON
 def seed_from_json(cursor):
     try:
-        with open("seed_data.json", "r") as f:
+        with open("intents.json", "r") as f:
             data = json.load(f)
     except:
-        print("⚠️ seed_data.json not found")
+        print("⚠️ intents.json not found")
         return
 
     # Prevent duplicate seeding
@@ -39,7 +39,7 @@ def seed_from_json(cursor):
                 (pattern.lower(), intent)
             )
 
-    print("✅ Seed data inserted")
+    print("✅ intents inserted")
 
 
 def init_db():
